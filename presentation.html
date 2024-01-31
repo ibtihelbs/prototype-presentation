@@ -13,17 +13,19 @@
       }
       .presentation-container {
         white-space: nowrap;
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
         height: 100vh; /* Full viewport height */
+        scroll-snap-type: y mandatory;
       }
       .slide {
         display: inline-block;
-        width: 100vw; /* Full viewport width */
-        height: 100vh; /* Full viewport height */
+        height: 100%;
+        min-width: 100vw; /* Full viewport width */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
+        scroll-snap-align: start;
       }
       .overview {
         position: fixed;
@@ -86,7 +88,7 @@
 
       function showSlide(index) {
         const slides = document.querySelectorAll(".slide");
-        slides[index].scrollIntoView({ behavior: "smooth", block: "start" });
+        slides[index].scrollIntoView({ behavior: "smooth" });
       }
     </script>
   </body>
