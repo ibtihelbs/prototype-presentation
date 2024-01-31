@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentation</title>
+    <style>
+      body,
+      html {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .presentation-container {
+        white-space: nowrap;
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100vh; /* Full viewport height */
+      }
+      .slide {
+        display: inline-block;
+        width: 100vw; /* Full viewport width */
+        height: 100vh; /* Full viewport height */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .overview {
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        z-index: 999;
+        overflow-y: auto;
+        max-height: 80vh;
+      }
+      .thumbnail {
+        width: 50px;
+        height: auto;
+        margin-bottom: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Presentation slides -->
+    <div class="presentation-container" id="presentationContainer">
+      <!-- Slides will be dynamically added here -->
+    </div>
+
+    <!-- Overview thumbnails -->
+    <div class="overview" id="overview">
+      <!-- Thumbnails will be dynamically added here -->
+    </div>
+
+    <script>
+      // Retrieve images from localStorage
+      const images = JSON.parse(localStorage.getItem("images")) || [];
+
+      const presentationContainer = document.getElementById(
+        "presentationContainer"
+      );
+      const overviewContainer = document.getElementById("overview");
+
+      // Create slides and overview thumbnails
+      images.forEach((imageData, index) => {
+        // Create slide
+        const slide = document.createElement("div");
+        slide.classList.add("slide");
+        slide.style.backgroundImage = `url("${imageData}")`;
+        presentationContainer.appendChild(slide);
+
+        // Create overview thumbnail
+        const thumbnail = document.createElement("img");
+        thumbnail.classList.add("thumbnail");
+        thumbnail.src = imageData;
+        thumbnail.alt = `Thumbnail ${index + 1}`;
+        thumbnail.addEventListener("click", () => {
+          showSlide(index);
+        });
+        overviewContainer.appendChild(thumbnail);
+      });
+
+      function showSlide(index) {
+        const slides = document.querySelectorAll(".slide");
+        slides[index].scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    </script>
+  </body>
+</html>

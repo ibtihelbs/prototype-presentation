@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login and Image Upload</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      input[type="text"],
+      input[type="password"],
+      input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 5 columns */
+        grid-template-rows: repeat(9, auto); /* 9 rows */
+        grid-gap: 20px;
+        margin-top: 20px;
+      }
+      .grid-item {
+        background-color: #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        height: 100px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .grid-item img {
+        width: 100%;
+        max-height: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <input type="submit" value="Login" />
+      </form>
+    </div>
+
+    <div id="gridContainer" class="container" style="display: none">
+      <h2>Grid Page</h2>
+      <div class="grid">
+        <!-- Generating grid items dynamically -->
+      </div>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById("loginForm");
+      const gridContainer = document.getElementById("gridContainer");
+      const container = document.querySelector(".container");
+
+      loginForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+        // verify the credentials, for simplicity, I'm just redirecting
+        // If credentials are valid, show the grid page
+        showGridPage();
+      });
+
+      function showGridPage() {
+        loginForm.reset(); // Clear form fields
+        loginForm.style.display = "none"; // Hide login form
+        container.style.display = "none"; // Hide login form
+        gridContainer.style.display = "block"; // Show grid container
+        // Generating grid items dynamically
+        const grid = document.querySelector(".grid");
+        for (let row = 1; row <= 9; row++) {
+          for (let col = 1; col <= 5; col++) {
+            const gridItem = document.createElement("div");
+            gridItem.classList.add("grid-item");
+            gridItem.setAttribute("id", `grid-item-${row}-${col}`);
+            gridItem.setAttribute("onclick", `uploadImage(${row}, ${col})`);
+            gridItem.innerText = `Click to upload image`;
+            grid.appendChild(gridItem);
+          }
+        }
+      }
+
+      function uploadImage(row, col) {
+        const gridItemId = `grid-item-${row}-${col}`;
+        const gridItem = document.getElementById(gridItemId);
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.style.display = "none";
+        fileInput.addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+              const imgElement = document.createElement("img");
+              imgElement.src = event.target.result;
+              gridItem.innerHTML = ""; // Clear existing content
+              gridItem.appendChild(imgElement);
+              // Store image data in localStorage
+              const imageData = event.target.result;
+              const images = JSON.parse(localStorage.getItem("images")) || [];
+              images.push(imageData);
+              localStorage.setItem("images", JSON.stringify(images));
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+        document.body.appendChild(fileInput); // Append file input to the document
+        fileInput.click(); // Simulate click event on file input
+      }
+    </script>
+  </body>
+</html>
